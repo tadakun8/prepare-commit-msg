@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# コミットメッセージが保存されているファイル
+commit_message_file=$1
+# コミットメッセージ
+commit_message=$(cat $1)
+
+# ブランチ名についている「#」以下のチケット番号を「#」含めて取得
+# git rev-parse --abbrev-ref HEAD : 現在のブランチ名を取得
+# awk '{print substr($0, index($0, "#"))}' : 「#」以下のチケット番号を「#」含めて取得
+# xargs -I{} echo "[{}]" : チケット番号に[]を含めて表示(ex. [#333])
+ticketNumber=$(git rev-parse --abbrev-ref HEAD | awk '{print substr($0, index($0, "#"))}' | xargs -I{} echo "[{}]")
+
+# コミットメッセージの変更
+echo "${ticketNumber}" "${commit_message}" > "${commit_message_file}"
